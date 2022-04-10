@@ -202,6 +202,7 @@
                                                             </tr>
                                                         </tbody>
                                                     </table>
+                                                
                                                 </div>
                                             </div>
                                         </div>
@@ -249,6 +250,7 @@
                                                         <td><a href="javascript:;" class="btn btn-sm btn-outline-primary">Submit Assessment</a></td>
                                                     </tr>
                                                 </table>
+                                                <span id="uploadSpan"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -465,6 +467,13 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <script type="text/javascript" src="assets/abi/e_dao_project_deliverable_abii.js"></script>
+    <script type="text/javascript" src="assets/abi/i_e_dao_abi.js"></script>
+    <script type="text/javascript" src="assets/abi/i_e_dao_project_abi.js"></script>
+    <script type="text/javascript" src="assets/abi/i_evidence_dao_abi.js"></script>
+    <script type="text/javascript" src="assets/abi/i_evidence_dao_nft_abi.js"></script>
+
     <script>
         //const web3 = new Web3('https://cloudflare-eth.com');
         //const web3 = new Web3(window.ethereum);
@@ -557,17 +566,19 @@
             }
         };
 
+        const uploadSpan = ge("uploadSpan");
         const deliverableAssessmentCommentary = ge("deliverable_assessment_commentary");
         const deliverableAssessmentResult = ge("deliverable_assessment_result");
         function upload() {
         var deliverableAddress = "0x12a87626F245d474644DdD6Fc299A68Dc107ea79";
-        var EDAOProjectDeliverableContract = web3.eth.Contract(iEDAOProjectAbi,deliverableAddress);
+        var EDAOProjectDeliverableContract = new web3.eth.Contract(eDAOProjectDeliverableAbi,deliverableAddress);
         var content = deliverableContent.files[0];
         ipfs.add(content)
         .then(function(response){
             
             console.log(response);                
-            
+            var added = response; 
+
             var hash = added[0].hash;
             var commentary = deliverableAssessmentCommentary.value; 
             var result = adeliverableAssessmentResult.value;
@@ -578,9 +589,12 @@
             EDAOProjectDeliverableContract.methods.setIpfsCommentaryHash(commentary, result, hash).send({from : account})
             .then(function(response){
                 console.log(response);
+                uploadSpan.innerHTML = "UPLOADED :: " + response.blockhash ;
+
             })
             .catch(function(err){
                 console.log(err);
+                uploadSpan.innerHTML = "error :: " + err ; 
             });
 
         })

@@ -174,7 +174,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="card-title d-flex align-items-start justify-content-between">
-                                                    <h5 class="card-title text-primary">Deliverables to Be Assessesd</h5>
+                                                    <h5 class="card-title text-primary">Deliverables Outstanding</h5>
                                                 </div>
                                                 <div class="table-responsive ">
                                                     <table class="table" id="deliverable_table">
@@ -201,6 +201,7 @@
                                                             </tr>
                                                         </tbody>
                                                     </table>
+                                                    <span id="upload_span"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -458,6 +459,11 @@
 
     <!-- Page JS -->
     <script src="assets/js/dashboards-analytics.js"></script>
+    <script type="text/javascript" src="assets/abi/e_dao_project_deliverable_abi.js"></script>
+    <script type="text/javascript" src="assets/abi/i_e_dao_abi.js"></script>
+    <script type="text/javascript" src="assets/abi/i_e_dao_project_abi.js"></script>
+    <script type="text/javascript" src="assets/abi/i_evidence_dao_abi.js"></script>
+    <script type="text/javascript" src="assets/abi/i_evidence_dao_nft_abi.js"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
@@ -554,8 +560,8 @@
         };
 
         var deliverableAddress = "0x12a87626F245d474644DdD6Fc299A68Dc107ea79";
-        var EDAOProjectDeliverableContract = web3.eth.Contract(iEDAOProjectAbi,deliverableAddress);
-        
+        var EDAOProjectDeliverableContract = new web3.eth.Contract(eDAOProjectDeliverableAbi,deliverableAddress);
+        const uploadSpan = ge("upload_span");
         const deliverableContentName = ge("deliverable_content_name");
         const deliverableNameAssginement = ge("deliverable_name_assignement");
         const additionalContributors = ge("additional_contributors");
@@ -571,7 +577,7 @@
             .then(function(response){
                 
                 console.log(response);                
-                
+                var added = response; 
                 var hash = added[0].hash;
                 var contentName = deliverableContentName.value; 
                 var contributors = additionalContributors.value.split(",");
@@ -581,10 +587,11 @@
                 console.log(contributors);
                 EDAOProjectDeliverableContract.methods.submitDeliverable(contentName, contributors, hash).send({from : account})
                 .then(function(response){
-                    console.log(response);
+                    uploadSpan.innerHTML = "UPLOADED :: " + response.blockhash ;
                 })
                 .catch(function(err){
                     console.log(err);
+                    uploadSpan.innerHTML = "error :: " + err ; 
                 });
 
             })
