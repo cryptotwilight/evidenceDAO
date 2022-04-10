@@ -20,8 +20,13 @@ iEvidenceDAOAbi = [
 				"type": "string"
 			},
 			{
+				"internalType": "string",
+				"name": "_documentNFTSymbol",
+				"type": "string"
+			},
+			{
 				"internalType": "address",
-				"name": "_unlockAddress",
+				"name": "_governanceToken",
 				"type": "address"
 			},
 			{

@@ -230,14 +230,14 @@
                                                     </tr>
                                                     <tr>
                                                         <td>Assessment Commentary</td>
-                                                        <td><input type="text" placeholder="assessment_commentary">
+                                                        <td><input id="deliverable_assessment_commentary" type="text" placeholder="assessment_commentary">
                                                         </td>
                                                     </tr>
 
                                                     <tr>
                                                       <td>Assessment Result</td>
                                                       <td> 
-                                                            <select id="assessment_result" class="form-control">
+                                                            <select id="deliverable_assessment_result" class="form-control">
                                                               <option value="testDao" class="dropdown-item">Cleared</option>
                                                               <option value="test1Dao" class="dropdown-item">Ammendments</option>
                                                               <option value="test1Dao" class="dropdown-item">Void</option>
@@ -557,6 +557,8 @@
             }
         };
 
+        const deliverableAssessmentCommentary = ge("deliverable_assessment_commentary");
+        const deliverableAssessmentResult = ge("deliverable_assessment_result");
         function upload() {
 
         var content = deliverableContent.files[0];
@@ -566,13 +568,13 @@
             console.log(response);                
             
             var hash = added[0].hash;
-            var contentName = deliverableContentName.value; 
-            var contributors = additionalContributors.value.split(",");
+            var commentary = deliverableAssessmentCommentary.value; 
+            var result = adeliverableAssessmentResult.value;
             
             console.log(hash);
             console.log(contentName);
             console.log(contributors);
-            EDAOProjectDeliverableContract.methods.submitDeliverable(contentName, contributors, hash).send({from : account})
+            EDAOProjectDeliverableContract.methods.setIpfsCommentaryHash(commentary, result, hash).send({from : account})
             .then(function(response){
                 console.log(response);
             })
