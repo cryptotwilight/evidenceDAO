@@ -560,7 +560,8 @@
         const deliverableAssessmentCommentary = ge("deliverable_assessment_commentary");
         const deliverableAssessmentResult = ge("deliverable_assessment_result");
         function upload() {
-
+        var deliverableAddress = "0x12a87626F245d474644DdD6Fc299A68Dc107ea79";
+        var EDAOProjectDeliverableContract = web3.eth.Contract(iEDAOProjectAbi,deliverableAddress);
         var content = deliverableContent.files[0];
         ipfs.add(content)
         .then(function(response){
