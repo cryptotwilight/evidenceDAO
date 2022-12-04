@@ -5,8 +5,8 @@ quantity and importance of projects done by the DAO increase. Hence at Evidence 
 providing a unified space on the decentralized web where DAOs can store and curate project data. 
 
 ## Architecture 
-The architecture of Evidence DAO is completely decentralized we rely on EVM to provide compute and IPFS to provide scaleable decentralized storage. The diagram below describes the Prototype architecture. 
-<img src="https://github.com/cryptotwilight/evidenceDAO/blob/e871004b6cf41cd62693625c80281258607ab0d2/media/Evidence%20DA%20Architecture.png" width=100 height=100>
+The architecture of Evidence DAO is completely decentralized we rely on EVM to provide compute and IPFS to provide scaleable decentralized storage. The diagram below describes the Prototype architecture. <br/>
+<img src="https://github.com/cryptotwilight/evidenceDAO/blob/e871004b6cf41cd62693625c80281258607ab0d2/media/Evidence%20DA%20Architecture.png" width=300 height=300>
 
 ## Testnet Deployments 
 The table below contains the testnet deployments for the Evidence DAO test net prototype. This prototype is functional and useable 
@@ -30,7 +30,7 @@ Below is the current testnet deployment on the Sepolia Network.
 
 
 ### UI 
-The User Interface for the prototype can be found at the following address 
+The User Interface for the prototype can be found at the following address <br/>
 https://raspy-frost-1289.on.fleek.co/
 
 
