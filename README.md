@@ -16,19 +16,22 @@ and should provide DAOs with a feel for the commercial platform that is currentl
 ### Smart Contracts
 Below is the current testnet deployment on the Sepolia Network. 
 
-|**Address** 							   | **Contract** 								  | **Version**|
-|------------------------------------------|----------------------------------------------|------------|
-|0x2a4a1a1f0b2DDEF48E2E30c858cB164afCe3845b|RESERVED_OPEN_REGISTER_LITE					  |1	   	   |
-|0x36c35A9F77e638c7b165E044F4C6472fDd8f67E2|RESERVED_EVIDENCE_PROOF_NFT_FACTORY			  |2	       |
-|0x899E3E7C015b065c094A0f0B34425E7C0E0CFb88|RESERVED_EVIDENCE_DAO_REWARDED_PRODUCT_FACTORY|3	       |
-|0x8B5DFDcFAc9334BBEcF40EBB814f72319E04AFA5|RESERVED_EVIDENCE_DAO_DELIVERABLE_FACTORY	  |1	       |
-|0xE0b8c9f9b97ba03fEA53ffe37002Cc4C4D99618F|RESERVED_EVIDENCE_DAO_PROJECT_FACTORY		  |2	       |
-|0xA9fCEa306369201Df9BAbFAAF382124f819fe5a4|RESERVED_EVIDENCE_DAO_FACTORY				  |1	       |
-|0xF8Dac026642a89D4eC69b72eceA8D784c009A80A|RESERVED_EVIDENCE_DAO_ATHENEUM_FACTORY		  |3	       |
-|0x53a821e8e3D63AF1924270915838D480e12e762F|RESERVED_EVIDENCE_DAO_CORE					  |2	       |
-|0x5194680Fb4be627CFb8D1F8Cf4986B3272c25B80|RESERVED_EVIDENCE_DAO_GLOBAL_ADMINISTRATOR	  |0	       |
+|**Address** 							   | **Contract** 								  	|**Version**|
+|------------------------------------------|------------------------------------------------|-----------|
+|0xB0030f8Ec426b8b88104f5E807b5b25B300c8358|RESERVED_OPEN_REGISTER_LITE						|1			|
+|0xF5D7E2a655Aaab68495A6517C59bc42fe128DC94|RESERVED_EVIDENCE_DAO_CORE						|3			|
+|0xa7a1093dE713fBC74b0B875349649380400Af153|RESERVED_EVIDENCE_DAO_ASSESSOR_REGISTER			|2			|
+|0x5194680Fb4be627CFb8D1F8Cf4986B3272c25B80|RESERVED_EVIDENCE_DAO_GLOBAL_ADMINISTRATOR		|0			|
+|										   |												|			|
+|0x53510E6Ebe28a4b647AA6F90169c9eaE66Ac8Ea3|RESERVED_EVIDENCE_DAO_FACTORY					|1			|
+|0x39dB32b88B57337F06B32033869382D159931840|RESERVED_EVIDENCE_PROOF_NFT_FACTORY				|2			|
+|0xdF571f9C8E2bb488BB91f979B07694838ed5C89D|RESERVED_EVIDENCE_DAO_ATHENEUM_FACTORY			|3			|
+|0x208ca36882CDc81374B55b54c9fd514dFcf7e448|RESERVED_EVIDENCE_DAO_PROJECT_FACTORY			|3			|
+|0x6963e5252b6D4ae0D41718C6411072f249e63161|RESERVED_EVIDENCE_DAO_DELIVERABLE_FACTORY		|7			|
 
 
+ 
+ 
 ### UI 
 The User Interface for the prototype can be found at the following address <br/>
 https://raspy-frost-1289.on.fleek.co/
@@ -57,7 +60,7 @@ For the prototype you will also need a membership token contract. This is checke
 
 To execute the Prototype the following steps have to be followed 
 
-1. Ensure all addresses to be used in roles except for the Project Assessor are members of the DAO via the DAO token contract
+1. Ensure all addresses to be used in roles except for the Project Assessor are registered members of the DAO via the DAO token contract
 Note: For the demo DAOs will only be able to use project assessors that are outside the project but inside the DAO  
 2. DAO Administrator - needs to register the DAO 
 3. DAO Administrator - needs to register all DAO members that are going to be using Evidence DAO 
@@ -71,17 +74,17 @@ Note: For the demo DAOs will only be able to use project assessors that are outs
 11. DAO Administrator - needs to approve the project assessment 
 12. DAO Administrator - needs to approve the project deliverable 
 13. Project Leader - needs to push the deliverables to the Atheneum 
-14 Unregistered Members - should be able to review the deliverables 
+14. Unregistered Members - should be able to review the deliverables 
 
 ### Commentary 
-Security has been implemented in this prototype and it does demostrate some strong fundamentals. For example project leaders cannot assign non project members to deliverables, and Unregistered Members DAO members cannot join projects. Also the administrator cannot register non-DAO members. 
+Security has been implemented in this prototype and it does demostrate some strong fundamentals. For example project leaders cannot assign non project members to deliverables, and unregistered Members of the DAO cannot join projects. Also the administrator cannot register non-DAO members. 
 
 This model ensures that DAOs can accurately begin the process of designing how they will implement Evidence DAO into their existing organisational processes with the comfort that at scale rogue behaviour is very difficult to achieve. 
 
-Evidence DAO moves DAOs into the space whereby the "Know who" is doing, rather than the bounty model whereby it's a free for all with sometimes very sensitive data. 
+Evidence DAO moves DAOs into the space of we "Know Who" is doing, rather than the current bounty model whereby it's a free for all. The importance of this distinction increases when working with sensitive data.
 
 #### Note on Proofs 
-Proofs are issued by Evidence DAO since a DAO is permissionless users can leave and rejoin at any time therefore evidence of their contribution needs to be available. These may shift to a Soul Bound model in the upcoming commercial version of Evidence DAO  
+Proofs are issued by Evidence DAO. The rationale here is that since a DAO is permissionless users can leave and rejoin at any time therefore indisputable evidence of their contribution needs to be available. These may shift to a Soul Bound model in the upcoming commercial version of Evidence DAO.
 
 For more on Evidence DAO see
 https://www.evidencedaocrypto.com

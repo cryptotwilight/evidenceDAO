@@ -1,4 +1,4 @@
-iEvidenceDAONFTAbi = [
+iEvidenceDaoProofNft = [
 	{
 		"inputs": [
 			{
@@ -31,11 +31,11 @@ iEvidenceDAONFTAbi = [
 				"type": "string"
 			}
 		],
-		"name": "mintDocument",
+		"name": "mint",
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "_documentNFTId",
+				"name": "_nftId",
 				"type": "uint256"
 			}
 		],
