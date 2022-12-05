@@ -8,6 +8,7 @@ import "https://github.com/Block-Star-Logic/open-libraries/blob/703b21257790c56a
 import "../interfaces/IEvidenceDao.sol";
 import "../interfaces/IEvidenceDaoMemberRegister.sol";
 import "../interfaces/IEvidenceDaoProject.sol";
+import "../interfaces/IEvidenceDaoRewardedProduct.sol";
 import "../interfaces/IEvidenceDaoProjectDeliverable.sol";
 import "../interfaces/IEvidenceDaoAtheneum.sol";
 
@@ -24,7 +25,7 @@ contract EvidenceDaoAtheneum is IEvidenceDaoAtheneum, IOpenVersion {
     IOpenRegisterLite registry;
 
     string constant name        = "EVIDENCE_DAO_ATHENEUM";  
-    uint256 constant version    = 3; 
+    uint256 constant version    = 4; 
 
     address [] deliverables; 
     mapping(address=>bool) knownDeliverables; 
@@ -53,7 +54,12 @@ contract EvidenceDaoAtheneum is IEvidenceDaoAtheneum, IOpenVersion {
         return daoAddress; 
     }
 
+    function getAvailableDeliverableCount() view external returns (uint256 _count) {
+        return deliverables.length; 
+    }
+
     function getAllDeliverables() view external returns (address [] memory _deliverables) {
+        require(dao.isMember(msg.sender), "not dao member");
         return deliverables; 
     }
 
@@ -112,7 +118,7 @@ contract EvidenceDaoAtheneum is IEvidenceDaoAtheneum, IOpenVersion {
     //======================================= INTERNAL ==========================================================================
 
     function deliverableOnly() view internal returns (bool) {
-        require(IEvidenceDaoProject(IEvidenceDaoProjectDeliverable(msg.sender).getSeed().project).getSeed().dao == daoAddress, "dao deliverables only");
+        require(IEvidenceDaoProject(IEvidenceDaoRewardedProduct(msg.sender).getSeed().project).getSeed().dao == daoAddress, "dao deliverables only");
         return true; 
     }
 

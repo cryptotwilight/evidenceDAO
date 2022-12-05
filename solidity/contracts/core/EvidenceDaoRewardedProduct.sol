@@ -14,10 +14,8 @@ contract EvidenceDaoRewardedProduct is IEvidenceDaoRewardedProduct, IOpenVersion
 
     using LOpenUtilities for address; 
 
-    address self;
-
-    string name = "EVIDENCE_DAO_REWARDED_PRODUCT" ;
-    uint256 version = 3; 
+    string name                         = "EVIDENCE_DAO_REWARDED_PRODUCT" ;
+    uint256 version                     = 10; 
     
     string constant registryCA          = "RESERVED_OPEN_REGISTER_LITE";
 
@@ -39,6 +37,10 @@ contract EvidenceDaoRewardedProduct is IEvidenceDaoRewardedProduct, IOpenVersion
         seed = _seed; 
         registry = IOpenRegisterLite(_registry);
         project = IEvidenceDaoProject(_seed.project);
+        for(uint256 x = 0; x < _seed.assignees.length; x++) {
+            assignInternal(_seed.assignees[x]);
+        }                
+        status = "OPEN";
     }
 
     function getName() view external returns (string memory _name){
@@ -86,6 +88,8 @@ contract EvidenceDaoRewardedProduct is IEvidenceDaoRewardedProduct, IOpenVersion
     }
 
     function approveReward() virtual external returns (bool _approved){
+        checkCancelled();
+        adminOnly(); 
         return approveRewardInternal();
     }
 
@@ -100,9 +104,7 @@ contract EvidenceDaoRewardedProduct is IEvidenceDaoRewardedProduct, IOpenVersion
     function addAssignee(address _assignee) external returns (bool _added){
         checkCancelled();
         leaderOrAdminOnly(); 
-        require(!knownAssignees[_assignee], "already assigned");
-        knownAssignees[_assignee] = true; 
-        assignees.push(_assignee);
+        assignInternal(_assignee);
         return true; 
     }
 
@@ -129,9 +131,17 @@ contract EvidenceDaoRewardedProduct is IEvidenceDaoRewardedProduct, IOpenVersion
      
     // ====================================== INTERNAL =================================================
 
-    function approveRewardInternal() internal returns (bool){
-        checkCancelled();
-        adminOnly(); 
+    function assignInternal(address _assignee) internal returns (bool) {
+        if(seed.projectMemberAssignmentsOnly) {
+            require(project.isMember(_assignee),"assignee not project member");
+        }
+        require(!knownAssignees[_assignee], "already assigned");
+        knownAssignees[_assignee] = true; 
+        assignees.push(_assignee);
+        return true; 
+    }
+
+    function approveRewardInternal() internal returns (bool){        
         require(filed, "deliverable not filed");
         approved = true;         
         status = "PRODUCT_APPROVED";

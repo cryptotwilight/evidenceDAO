@@ -6,168 +6,104 @@ import "https://github.com/Block-Star-Logic/open-register/blob/51af10e674ba2554d
 import "https://github.com/Block-Star-Logic/open-libraries/blob/703b21257790c56a61cd0f3d9de3187a9012e2b3/blockchain_ethereum/solidity/V1/libraries/LOpenUtilities.sol";
 
 import "../interfaces/IEvidenceDaoMemberRegister.sol";
-import "../interfaces/IEvidenceDaoProject.sol";
-import "../interfaces/IEvidenceDaoProofNFT.sol";
-import "../interfaces/IEvidenceDaoRewardedProduct.sol";
 
-contract EvidenceDaoRewardedProduct is IEvidenceDaoRewardedProduct, IOpenVersion { 
+
+contract EvidencDaoMemberRegister is IEvidenceDaoMemberRegister, IOpenVersion { 
 
     using LOpenUtilities for address; 
 
-    address self;
+    address self;     
+    string constant name                = "RESERVED_EVIDENCE_DAO_ASSESSOR_REGISTER";
+    uint256 constant version            = 2; 
 
-    string name = "EVIDENCE_DAO_REWARDED_PRODUCT" ;
-    uint256 version = 3; 
-    
+    string constant evidenceDAOAdminCA  = "RESERVED_EVIDENCE_DAO_GLOBAL_ADMINISTRATOR";
     string constant registryCA          = "RESERVED_OPEN_REGISTER_LITE";
 
-    RewardedProductSeed seed; 
     IOpenRegisterLite registry; 
-    IEvidenceDaoProject project; 
 
-    address [] assignees; 
-    mapping(address=>bool) knownAssignees; 
+    address [] members; 
+    mapping(address=>bool) knownMembers; 
 
-    uint256 completedDate;
-    string contentManifest; 
-    string status; 
-    bool filed = false;
-    bool approved = false; 
-    bool cancelled = false;  
-    
-    constructor(RewardedProductSeed memory _seed, address _registry){
-        seed = _seed; 
+    mapping(address=>bool) knownAdministrators; 
+
+    constructor(address _registry) {
         registry = IOpenRegisterLite(_registry);
-        project = IEvidenceDaoProject(_seed.project);
+        addAdminInternal(registry.getAddress(evidenceDAOAdminCA), true);
+        self = address(this);
     }
 
-    function getName() view external returns (string memory _name){
+    function getName() pure external returns (string memory _name) {
         return name; 
     }
 
-    function getVersion() view external returns (uint256 _version) {
+    function getVersion() pure external returns (uint256 _version) {
         return version; 
     }
 
-    function getStatus() virtual view external returns (string memory _status){
-        return status; 
+    function getRegisteredMembers() view external returns (address [] memory _members){
+        return members; 
     }
 
-    function getSeed() view external returns (RewardedProductSeed memory _seed){
-        return seed; 
+    function isRegisteredMember(address _member) view external returns (bool _isRegistered){
+        return knownMembers[_member];
     }
 
-    function getAssignees() view external returns (address [] memory _assignees){
-        return assignees; 
+    function isAdministrator(address _member) view external returns(bool _isAdministrator){
+        return knownAdministrators[_member];
     }
 
-    function getCompletedDate() view external returns (uint256 _completedDate){
-        return completedDate; 
-    }
-
-    function getContentManifest() view external returns (string memory _ipfsHash){
-        return contentManifest; 
-    }
-
-    function getProofsNFTAddress() view external returns (address _erc721){
-        return seed.proofNft; 
-    }
-
-    function claimReward(string memory _ipfsManifest) external returns (bool _claimed){
-        checkCancelled();
-        assigneeOnly();
-        IEvidenceDaoProofNFT mint_ = IEvidenceDaoProofNFT(seed.proofNft);
-        mint_.mint(msg.sender, _ipfsManifest);
-        completedDate = block.timestamp; 
-        filed = true; 
-        contentManifest = _ipfsManifest;
-        status = "IN_CLAIM";
-        return true; 
-    }
-
-    function approveReward() virtual external returns (bool _approved){
-        return approveRewardInternal();
-    }
-
-    function allowProductUpdate() external returns (bool _allowed){
-        checkCancelled();
+    function setAdministrator(address _member, bool _isAdmin) external returns (bool _set){
         adminOnly(); 
-        require(approved == false, "product already approved");        
-        filed = false;
+        addAdminInternal(_member, _isAdmin);
         return true; 
     }
 
-    function addAssignee(address _assignee) external returns (bool _added){
-        checkCancelled();
-        leaderOrAdminOnly(); 
-        require(!knownAssignees[_assignee], "already assigned");
-        knownAssignees[_assignee] = true; 
-        assignees.push(_assignee);
-        return true; 
+    function registerMembers(address [] memory _members) external returns (uint256 _registerCount, uint256 _totalMembers){       
+        adminOnly(); 
+        for(uint256 x = 0; x < _members.length; x++) {
+            address member_ = _members[x];
+            members.push(member_);
+            knownMembers[member_] = true; 
+            _registerCount++;        
+        }
+        return (_registerCount, members.length);
     }
 
-    function removeAssignee(address _assignee) external returns (bool _removed){
-        selfOrLeaderOrAdminOnly(_assignee);
-        require(knownAssignees[_assignee], "unknown assignee");
-        delete knownAssignees[_assignee];
-        assignees = _assignee.remove(assignees);
-        return true; 
-    }
-
-    function cancel() external returns (bool _cancelled){
-        adminOnly();
-        status = "PRODUCT_CANCELLED"; 
-        return true;         
+    function deRegisterMembers(address [] memory _members) external returns (uint256 _deRegisterCount, uint256 _totalMembers){
+        adminOnly(); 
+        for(uint256 x = 0; x < _members.length; x++) {
+            address member_ = _members[x];
+            if(knownAdministrators[member_]){
+                addAdminInternal(member_, false);
+            }
+            if(knownMembers[member_]){
+                members = member_.remove(members);
+                delete knownMembers[member_]; 
+                _deRegisterCount++;
+            }
+        }
+        return (_deRegisterCount, members.length);
     }
 
     function notifyChangeOfAddress() external returns (bool _recieved) {
-        adminOnly(); 
+        evidenceDAOAdminOnly();
         registry = IOpenRegisterLite(registry.getAddress(registryCA));
+        addAdminInternal(registry.getAddress(evidenceDAOAdminCA), true);
+        return true; 
+    }
+    //============================== INTERNAL ===============================================
+    function addAdminInternal(address _member, bool _isAdmin) internal returns (bool) {
+        knownAdministrators[_member] = _isAdmin; 
         return true; 
     }
 
-     
-    // ====================================== INTERNAL =================================================
-
-    function approveRewardInternal() internal returns (bool){
-        checkCancelled();
-        adminOnly(); 
-        require(filed, "deliverable not filed");
-        approved = true;         
-        status = "PRODUCT_APPROVED";
-        return approved; 
-    }
-
-
-    function checkCancelled() view internal returns (bool) {
-        require(!cancelled, "product cancelled");
+    function evidenceDAOAdminOnly() view internal returns (bool) {
+        require(registry.getAddress(evidenceDAOAdminCA) == msg.sender, "evidence dao admin only");
         return true; 
     }
 
     function adminOnly() view internal returns (bool) {
-        require(getMemberRegister().isAdministrator(msg.sender), "admin only");
+        require(knownAdministrators[msg.sender], "admin only");
         return true; 
     }
-
-    function selfOrLeaderOrAdminOnly(address _self) view internal returns (bool) {
-        require(msg.sender == _self || project.getLeader() == msg.sender || getMemberRegister().isAdministrator(msg.sender), "self or admin only");
-        return true; 
-    }
-
-    function assigneeOnly() view internal returns (bool) {
-        require(knownAssignees[msg.sender], "assignee only");
-        return true; 
-    }
-
-    function leaderOrAdminOnly() view internal returns (bool) {
-        require( project.getLeader() == msg.sender || getMemberRegister().isAdministrator(msg.sender), "admin or leader or assignee only");
-        return true; 
-    }
-
-
-    function getMemberRegister() view internal returns (IEvidenceDaoMemberRegister _register) {
-        return IEvidenceDaoMemberRegister(project.getSeed().dao); 
-    }
-
-
 }

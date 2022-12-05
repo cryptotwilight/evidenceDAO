@@ -19,7 +19,7 @@ contract EvidenceDao is IEvidenceDao, IEvidenceDaoMemberRegister {
     using LOpenUtilities for address; 
 
     string constant name = "EVIDENCE_DAO_PUBLIC_DAO";  
-    uint256 constant version = 1; 
+    uint256 constant version = 3; 
     
     string constant registryCA                  = "RESERVED_OPEN_REGISTER_LITE";
     string constant EvidenceDaoProjectFactoryCA = "RESERVED_EVIDENCE_DAO_PROJECT_FACTORY";
@@ -49,7 +49,7 @@ contract EvidenceDao is IEvidenceDao, IEvidenceDaoMemberRegister {
     address memberTokenAddress; 
     MEMBERSHIP_TOKEN_TYPE memberTokenType; 
 
-    constructor(DaoSeed memory _daoSeed, address _atheneum, address _proofsNFT, address _registry) {
+    constructor(DaoSeed memory _daoSeed, address _proofsNFT, address _atheneum, address _registry) {
         seed            = _daoSeed; 
         proofsNFT       = _proofsNFT; 
         atheneum        = IEvidenceDaoAtheneum(_atheneum);        

@@ -11,7 +11,7 @@ contract EDaoProjectFactory is EDaoBasicFactory, IEDaoProjectFactory {
 
     constructor(address _registry) EDaoBasicFactory(_registry) {
         name = "RESERVED_EVIDENCE_DAO_PROJECT_FACTORY";
-        version = 2; 
+        version = 3; 
     }
 
     function getProject(ProjectSeed memory _seed) external returns (address _project){

@@ -9,7 +9,7 @@ import "../interfaces/IEvidenceDao.sol";
 import "../interfaces/IEvidenceDaoMemberRegister.sol";
 import "../interfaces/IEvidenceDaoProject.sol";
 import "../interfaces/IEDaoDeliverableFactory.sol";
-import "../interfaces/IEvidenceDaoProjectDeliverable.sol";
+import "../interfaces/IEvidenceDaoRewardedProduct.sol";
 
 contract EvidenceDaoProject is IEvidenceDaoProject, IOpenVersion { 
 
@@ -17,7 +17,7 @@ contract EvidenceDaoProject is IEvidenceDaoProject, IOpenVersion {
     using LOpenUtilities for string; 
 
     string constant name                        = "EVIDENCE_DAO_PROJECT"; 
-    uint256 constant version                    = 3; 
+    uint256 constant version                    = 5; 
     
     string constant registryCA                  = "RESERVED_OPEN_REGISTER_LITE";
     string constant deliverableFactoryCA        = "RESERVED_EVIDENCE_DAO_DELIVERABLE_FACTORY";
@@ -139,8 +139,7 @@ contract EvidenceDaoProject is IEvidenceDaoProject, IOpenVersion {
     }
     
     function joinProject() external returns(bool _joined){
-        checkShutdown();
-        registeredMemberOnly();
+        checkShutdown();        
         return joinInternal(msg.sender); 
     }
     
@@ -149,10 +148,17 @@ contract EvidenceDaoProject is IEvidenceDaoProject, IOpenVersion {
         return leaveInternal(msg.sender);        
     }
 
+    function notifyDerivativeDeliverable(address _deliverable) external returns (bool _recieved) {
+        require(knownDeliverables[msg.sender], "unknown deliverable communication");
+        knownDeliverables[_deliverable] = true; 
+        return true; 
+    }
     
     function createDeliverable(RewardedProductSeed memory _deliverableSeed, RewardedProductSeed memory _assessmentSeed)  external returns (address _deliverableAddress){
         checkShutdown();
         leaderOrAdminOnly(); 
+        require(self == _deliverableSeed.project, "deliverable <-> project mis-match");
+        require(self == _assessmentSeed.project, "assessment <-> project mis-match");
         _deliverableAddress = deliverableFactory.getDeliverable(_deliverableSeed, _assessmentSeed);
         deliverables.push(_deliverableAddress);
         knownDeliverables[_deliverableAddress] = true; 
@@ -174,6 +180,7 @@ contract EvidenceDaoProject is IEvidenceDaoProject, IOpenVersion {
     //============================== INTERNAL ===============================================
 
     function joinInternal(address _joiner) internal returns (bool _joined){
+        registeredMemberOnly(_joiner);
         require(!isJoined[_joiner], "already joined");
         joiners.push(_joiner);
         isJoined[_joiner] = true; 
@@ -196,8 +203,8 @@ contract EvidenceDaoProject is IEvidenceDaoProject, IOpenVersion {
 
     function getStatusFromDeliverables() view internal returns (string memory _status) {
         for(uint256 x = 0; x < deliverables.length; x++){
-            IEvidenceDaoProjectDeliverable deliverable = IEvidenceDaoProjectDeliverable(deliverables[x]);
-            string memory deliverableStatus_ = deliverable.getStatus(); 
+            IEvidenceDaoRewardedProduct deliverable_ = IEvidenceDaoRewardedProduct(deliverables[x]);
+            string memory deliverableStatus_ = deliverable_.getStatus(); 
             if(!deliverableStatus_.isEqual("ALL_REWARDS_APPROVED")){
                 return "OVERDUE";
             }
@@ -230,8 +237,8 @@ contract EvidenceDaoProject is IEvidenceDaoProject, IOpenVersion {
         return true;
     }
 
-    function registeredMemberOnly() view internal returns (bool) {
-        require(registeredMembers.isRegisteredMember(msg.sender),"registered member only");
+    function registeredMemberOnly(address _member) view internal returns (bool) {
+        require(registeredMembers.isRegisteredMember(_member),"registered member only");
         return true; 
     }
 

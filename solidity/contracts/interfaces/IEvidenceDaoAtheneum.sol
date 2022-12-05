@@ -30,6 +30,18 @@ interface IEvidenceDaoAtheneum {
     function isKnownDeliverable(address _deliverable) view external returns (bool _isKnown);
 
     /** 
+     * @dev this is used to get a count of all the deliverables that are available to members of the DAO in this Atheneum
+     * @return _count of all deliverables in the Atheneum 
+     */ 
+    function getAvailableDeliverableCount() view external returns (uint256 _count);
+
+    /** 
+     * @dev this returns all the deliverables contained within this Atheneum
+     * @return _deliverables list for all deliverables in this Atheneum
+     */
+    function getAllDeliverables() view external returns (address [] memory _deliverables);
+
+    /** 
      * @dev this is used to add the given deliverable to the Atheneum 
      * @param _deliverable to be added 
      * @return _added true if the deliverable is added 

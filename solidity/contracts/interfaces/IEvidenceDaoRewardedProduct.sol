@@ -25,6 +25,8 @@ struct RewardedProductSeed {
     address project; 
     /** @dev dueDate for the rewarded product */ 
     uint256 dueDate; 
+    /** @dev projectMemberAssignmentsOnly for this rewarded product */
+    bool projectMemberAssignmentsOnly; 
 }
 
 interface IEvidenceDaoRewardedProduct { 

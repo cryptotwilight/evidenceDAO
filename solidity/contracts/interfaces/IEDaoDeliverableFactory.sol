@@ -7,7 +7,7 @@ pragma solidity ^0.8.17;
  * @notice Evidence DAO - Filecoin Next Steps Grant Community Contribution - Issue #555
  * @dev this is a background interface for creating deliverables
  */
-import { RewardedProductSeed } from "./IEvidenceDaoProjectDeliverable.sol";
+import { RewardedProductSeed } from "./IEvidenceDaoRewardedProduct.sol";
 
 interface IEDaoDeliverableFactory { 
 

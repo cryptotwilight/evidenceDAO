@@ -7,9 +7,8 @@ pragma solidity ^0.8.17;
  * @notice Evidence DAO - Filecoin Next Steps Grant Community Contribution - Issue #555
  * @dev this interface represents a project deliverable for a given DAO
  */
-import "./IEvidenceDaoRewardedProduct.sol";
 
-interface IEvidenceDaoProjectDeliverable is IEvidenceDaoRewardedProduct { 
+interface IEvidenceDaoProjectDeliverable { 
 
     /**
      * @dev this is used to get the search terms associated with this deliverable 

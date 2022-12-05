@@ -124,6 +124,12 @@ interface IEvidenceDaoProject {
      */
     function createDeliverable(RewardedProductSeed memory _deliverableSeed, RewardedProductSeed memory _assessmentSeed)  external returns (address _deliverableAddress);
 
+    /** 
+     * @dev this is used by deliverables to notify them of other deliverables created by the deliverable so they are recognised by the security scheme 
+     * @param _deliverable address that has been newly created 
+     * @return _recieved true if the notification has been successfully recieved 
+     */
+    function notifyDerivativeDeliverable(address _deliverable) external returns (bool _recieved);
     /**
      * @dev this enables the Project to update it's configuration after Evidence DAO maintenance changes
      * @return _recieved true if the notification was recieved

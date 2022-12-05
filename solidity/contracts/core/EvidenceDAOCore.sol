@@ -17,7 +17,7 @@ contract EvidenceDAOCore is IEvidenceDAOCore, IOpenVersion {
     address self; 
 
     string constant name                = "RESERVED_EVIDENCE_DAO_CORE"; 
-    uint256 constant version            = 2; 
+    uint256 constant version            = 3; 
 
     string constant evidenceDAOAdminCA  = "RESERVED_EVIDENCE_DAO_GLOBAL_ADMINISTRATOR";
 
