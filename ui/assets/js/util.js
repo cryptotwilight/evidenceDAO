@@ -52,3 +52,77 @@ function getBlockchainTimeFormat(dataStr) {
 function isAddressMatch(a, b) {
 	return a.toLowerCase() === b.toLowerCase(); 
 }
+
+const size = 4; 
+
+function shortenLinkCopyAddress(address) {
+  var aCopy = ce("a") ;
+  aCopy.setAttribute("href","javascript:copyAddress(\""+address+"\")");
+  var copyIcon = ce("i");
+  aCopy.append(copyIcon);
+  copyIcon.setAttribute("class", "bx bx-copy");
+
+  chain.blockExplorerUrls
+  var start = address.slice(0, size +1);
+  var end = address.slice(-size);
+  var shortAddress = start +"..."+ end; 
+
+  var aAddress = ce("a");
+  aAddress.setAttribute("href", chain.blockExplorerUrls[0] +"address/"+ address);
+  aAddress.setAttribute("target", "_blank");
+  aAddress.append(shortAddress);
+  var holder = ce("span");
+  holder.append(aAddress);
+  holder.append(aCopy);
+  
+  return holder; 
+}
+
+function shortenIpfsHash(ipfsHash) {
+	var aCopy = ce("a") ;
+	aCopy.setAttribute("href","javascript:copyAddress(\""+ipfsHash+"\")");
+	var copyIcon = ce("i");
+	aCopy.append(copyIcon);
+	copyIcon.setAttribute("class", "bx bx-copy");
+
+
+
+	var start = ipfsHash.slice(0, size +1);
+	var end = ipfsHash.slice(-size);
+	var shortHash = start +"..."+ end; 
+  
+	var aHash = ce("a");
+	aHash.setAttribute("href","ipfs://"+ ipfsHash);
+	aHash.setAttribute("target", "_blank");
+	aHash.append(shortHash);
+	var holder = ce("span");
+	holder.append(aHash);
+	holder.append(aCopy);
+	
+	return holder; 
+}
+
+function copyAddress(address) {
+	console.log("copying " + address);
+
+	// Create a dummy input to copy the string array inside it
+	  var dummy = document.createElement("input");
+
+	// Add it to the document
+	document.body.appendChild(dummy);
+
+	// Set its ID
+	dummy.setAttribute("id", "dummy_id");
+
+	// Output the array into it
+	document.getElementById("dummy_id").value=address;
+
+	// Select it
+	dummy.select();
+
+	// Copy its contents
+	document.execCommand("copy");
+
+	// Remove it as its not needed anymore
+	document.body.removeChild(dummy);
+  }

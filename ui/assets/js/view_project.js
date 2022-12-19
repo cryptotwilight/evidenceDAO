@@ -13,7 +13,7 @@ const deliverablesMessageSpan 		= ge("deliverables_message_span");
 var deliverableAssignees 			= [];
 const joinOrLeaveSpan				= ge("join_or_leave_span");
 
-async function configureCoreContracts() { 
+async function bootPageContracts() { 
 	iEvidenceDaoProject = getContract(iEvidenceDaoProjectAbi, projectAddress);
 	iEvidenceDaoProject.methods.getSeed().call({from : account})
 	.then(function(resp){
@@ -39,8 +39,7 @@ async function configureCoreContracts() {
 
 
 function loadPageData() { 
-	getViewerRole();		
-	populateProjectDetails();
+	getViewerRole();			
 }
 
 function populateProjectDetails() { 
@@ -56,6 +55,7 @@ function populateProjectDetails() {
 
 
 function loadProfiles() {
+	populateProjectDetails();
 	if(isAdmin) {
 		getMembersModule();			
 		getCreateDeliverableModule();

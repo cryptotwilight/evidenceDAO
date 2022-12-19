@@ -1,8 +1,12 @@
+const openRegisterLiteAddress = "0xB0030f8Ec426b8b88104f5E807b5b25B300c8358"; 
+var iOpenRegisterLiteContract; 
+
 var isAdmin 			= false; 
 var isLeader 			= false; 
 var isProjectMember	 	= false; 
 var isRegisteredMember 	= false; 
 var isDaoMember			= false; 
+var isRegisteredAssessor= false; 
 var isUnknown 			= false; 
 
 var roleName = ""; 
@@ -11,9 +15,41 @@ var deliverableSeed;
 var projectSeed; 
 var daoSeed; 
 
-var iEvidenceDaoProject; 
-var iEvidenceDaoMemberRegister; 
+// root page
+var iEvidenceDaoCoreContract;
+var iEvidenceDaoAssessorRegister; 
+
+// page local 
 var iEvidenceDao; 
+var iEvidenceDaoMemberRegister; 
+var iEvidenceDaoProject; 
+
+async function configureCoreContracts() { 
+	iOpenRegisterLiteContract =  getContract(iOpenRegisterLiteAbi, openRegisterLiteAddress);
+	iOpenRegisterLiteContract.methods.getAddress("RESERVED_EVIDENCE_DAO_CORE").call({from : account})
+	.then(function(resp){
+	  console.log(resp);
+	  var evidenceDAOCoreAddress = resp; 
+	  iEvidenceDaoCoreContract = getContract(iEvidenceDAOCoreAbi, evidenceDAOCoreAddress);  
+	  activateAssessorRegister();
+	})
+	.catch(function(err){
+	  console.log(err);               
+	});
+}
+
+function activateAssessorRegister() { 
+	iOpenRegisterLiteContract.methods.getAddress("RESERVED_EVIDENCE_DAO_ASSESSOR_REGISTER").call({from : account})
+	.then(function(resp){
+	  console.log(resp);
+	  var evidencdDaoAssessorRegisterAddress = resp; 
+	  iEvidenceDaoAssessorRegister = getContract(iEvidenceDaoMemberRegisterAbi, evidencdDaoAssessorRegisterAddress);   
+	  bootPageContracts();        	 
+	})
+	.catch(function(err){
+	  console.log(err);               
+	});
+}
 
 function getViewerRole() { 
 	checkIsDaoAdmin();	
@@ -100,46 +136,70 @@ function checkIsRegisteredMember() {
 }
 
 function checkIsDaoMember() {
-	console.log("checking is dao member");
-	if(daoSeed.memberTokenType === 0){
+	console.log(daoSeed.memberTokenType);
+	console.log("checking is dao member nft");
+	if(daoSeed.memberTokenType+"" === "0"){
 		var iErc721 = getContract(iErc721MetadataAbi, daoSeed.membershipToken);
 		iErc721.methods.balanceOf(account).call({from : account})
 		.then(function(resp){
+			console.log(resp);
 			var balance = resp; 
 			if(balance >= daoSeed.memberTokenLimit){
 				roleName = "DAO_MEMBER"; 
 				isDaoMember = true; 
+				loadProfiles();
 			}
 			else { 
-				roleName = "UNKNOWN"; 
-				isUnknown = true; 
+				isRegisteredAssessor(); 	
 			}
-			loadProfiles();
+			
 		})
 		.catch(function(err){
 			console.log(err);
 		})
 	}
-	if(daoSeed.memberTokenType === 1){
-		console.log("checking is dao member");
+	if(daoSeed.memberTokenType+"" === "1"){
+		console.log("checking is dao member erc20");
 		var iErc20 = getContract(iErc20MetadataAbi, daoSeed.membershipToken);
 		iErc20.methods.balanceOf(account).call({from : account})
 		.then(function(resp){
 			var balance = resp; 
+			console.log(resp);
 			if(balance >= daoSeed.memberTokenLimit){
 				roleName = "DAO_MEMBER";
 				isDaoMember = true; 
+				loadProfiles();
 			}
-			else { 
-				roleName = "UNKNOWN"; 
-				isUnknown = true; 
+			else {
+				checkRegisteredAssessor(); 			
 			}
+			
 		})
 		.catch(function(err){
 			console.log(err);
 		})
 	}		
 
+}
+
+function checkRegisteredAssessor() { 
+	 
+	iEvidenceDaoAssessorRegister.methods.isRegisteredMember(account).call({from : account})
+	.then(function(resp){
+		console.log(resp);
+		isRegisteredAssessor = resp; 
+		if(isRegisteredAssessor){
+			roleName = "REGISTERED_ASSESSOR";
+		}
+		else {
+			roleName = "UNKNOWN"; 
+			isUnknown = true;
+		}
+		loadProfiles();
+	})
+	.catch(function(err){
+		console.log(err);
+	})
 }
 
 function addReward(cell, seed) {
@@ -172,3 +232,4 @@ function addRewardCurrency(cell, seed) {
 		console.log(err);
 	})
 }
+

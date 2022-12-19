@@ -1,7 +1,3 @@
-const openRegisterLiteAddress = "0xB0030f8Ec426b8b88104f5E807b5b25B300c8358"; 
-var iOpenRegisterLiteContract; 
-
-
 const daoNameField        = ge("dao_search_field");
 const searchForDaoButton  = ge("search_for_dao_button");
 
@@ -19,9 +15,9 @@ const membershipTokenType     = ge("membership_token_type");
 const administratorAddress    = ge("administrator_address");
 const proofsNFTSymbol         = ge("proofs_nft_symbol");
 
-
-
-var iEvidenceDaoCoreContract;
+function bootPage(){ 
+	console.log("booting page contracts");
+}
 
 function registerDao() { 
    var daoSeed = {};
@@ -81,19 +77,7 @@ function loadPageData (){
 }
 
 
-async function configureCoreContracts() { 
-  iOpenRegisterLiteContract =  getContract(iOpenRegisterLiteAbi, openRegisterLiteAddress);
-  iOpenRegisterLiteContract.methods.getAddress("RESERVED_EVIDENCE_DAO_CORE").call({from : account})
-  .then(function(resp){
-	console.log(resp);
-	var evidenceDAOCoreAddress = resp; 
-	iEvidenceDaoCoreContract = getContract(iEvidenceDAOCoreAbi, evidenceDAOCoreAddress);          
-   
-  })
-  .catch(function(err){
-	console.log(err);               
-  });
-}
+
 
 function loadDaos() { 
   iEvidenceDaoCoreContract.methods.getDAOs().call({from : account})

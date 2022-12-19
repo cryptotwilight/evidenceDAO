@@ -1,16 +1,14 @@
 const queryString 						= window.location.search;
 const urlParams 						= new URLSearchParams(queryString);
-const deliverableAddress 				= urlParams.get("deliverable");
-const iEvidenceDaoProjectDeliverable 	= getContract(iEvidenceDaoProjectDeliverableAbi, deliverableAddress);
-const iEvidenceDaoRewardedProduct	 	= getContract(iEvidenceDaoRewardedProductAbi, deliverableAddress);
+const assessmentAddress 				= urlParams.get("assessment");
 
-const deliverableNameSpan				= ge("deliverable_name_span");
-const deliverableDetailsSpan			= ge("deliverable_details_span");
+const assessmentNameSpan				= ge("assessment_name_span");
+const assessmentDetailsSpan				= ge("assessment_details_span");
 const leaveOrCancelSpan					= ge("leave_or_cancel_span");
 
 const listAssigneesTable				= ge("list_assignees_table");
 
-const deliverablesMessageSpan			= ge("deliverables_message_span");
+const assessmentMessageSpan				= ge("assessment_message_span");
 const assigneeMessageSpan				= ge("assignee_message_span");
 
 const listDeliverableFilesTable			= ge("list_deliverable_files_table");
@@ -29,7 +27,11 @@ var isAssignee = false;
 var isAssessor = false; 
 var isRegisteredAssessor = false;; 
 
-function bootPageContracts() { 
+async function configureCoreContracts() { 
+	bootCore();
+}
+
+function bootCore() { 
 	iEvidenceDaoRewardedProduct.methods.getSeed().call({from : account})
 	.then(function(resp){
 		console.log(resp);
@@ -63,7 +65,9 @@ function bootPageContracts() {
 }
 
 function loadPageData() { 
-	getViewerRole();		
+	getViewerRole();
+	
+	
 }
 
 function populatePage(){
@@ -509,29 +513,13 @@ function displayClaimFiles() {
 }
 
 function getBookAssessmentModule(){
-	bookAssessmentSpan.innerHTML = "";	
+	bookAssessmentSpan.innerHTML = "";
 	var a = ce("a");
-	wrap(bookAssessmentSpan, "Book Deliverable For Assessment", a);
 	a.setAttribute("class","btn btn-outline-warning");
 	a.setAttribute("href", "javascript:bookAssessment()");
 	a.append(text("Book Assessment"));
+	bookAssessmentSpan.append(a);
 }
-
-function bookAssessment() {
-	iEvidenceDaoProjectDeliverable.methods.bookAssessment().send({from : account})
-	.then(function(resp){
-		console.log(resp);
-		var a = getRespLink(resp);
-		deliverablesMessageSpan.innerHTML = ""; 
-		deliverablesMessageSpan.append(text("ASSESSMENT BOOKED: "))
-		deliverablesMessageSpan.append(a);
-	})
-	.catch(function(err){
-		console.log(err);
-	});
-
-}
-
 
 function loadProfiles() {
 	console.log("loading profiles");
@@ -709,7 +697,6 @@ function processDeliverableSpecificRoles(status) {
 	});
 }
 
-const ADDRESS_ZERO =  "0x0000000000000000000000000000000000000000";
 function checkAssessorRole(status) {
 	if(status === "IN_CLAIM") {
 		iEvidenceDaoProjectDeliverable.methods.getAssessor().call({from :account})
@@ -724,19 +711,20 @@ function checkAssessorRole(status) {
 			}
 			else { 
 
-				if(assessor === ADDRESS_ZERO && isRegisteredAssessor){				
-					// Book Assessment
-					getBookAssessmentModule();
-					populatePage();
-				}
-				else { 
-					populatePage();
-				}
 			}
 		})
 		.catch(function(err){
 			console.log(err);
-		});		
+		});
+	
+			if(isRegisteredAssessor){
+				if(status === "IN_CLAIM"){ 
+				// Book Assessment
+				getBookAssessmentModule();
+				} 
+				populatePage();
+			}
+		
 	}
 	else { 
 		populatePage();

@@ -11,10 +11,18 @@
       const projectsMessageSpan = ge("projects_message_span");
       const listProjectsTable   = ge("list_projects_table");
       
-      const iEvidenceDao = getContract(iEvidenceDaoAbi,daoAddress );
-      const iEvidenceDaoMemberRegister = getContract(iEvidenceDaoMemberRegisterAbi, daoAddress);
-
-      async function configureCoreContracts() { 
+      
+      async function bootPageContracts() { 
+        iEvidenceDao = getContract(iEvidenceDaoAbi,daoAddress );
+        iEvidenceDaoMemberRegister = getContract(iEvidenceDaoMemberRegisterAbi, daoAddress);
+        iEvidenceDao.methods.getSeed().call({from : account}) 
+        .then(function(resp){
+          console.log(resp);
+          daoSeed = resp; 
+        })
+        .catch(function(err){
+          console.log(err);
+        })
       }
 
       function loadPageData() { 
@@ -553,58 +561,6 @@
           console.log(err);
         })
       }
-
-      const size = 4; 
-
-      function shortenLinkCopyAddress(address) {
-        var aCopy = ce("a") ;
-        aCopy.setAttribute("href","javascript:copyAddress(\""+address+"\")");
-        var copyIcon = ce("i");
-        aCopy.append(copyIcon);
-        copyIcon.setAttribute("class", "bx bx-copy");
-
-        chain.blockExplorerUrls
-        var start = address.slice(0, size +1);
-        var end = address.slice(-size);
-        var shortAddress = start +"..."+ end; 
-
-        var aAddress = ce("a");
-        aAddress.setAttribute("href", chain.blockExplorerUrls[0] +"address/"+ address);
-        aAddress.setAttribute("target", "_blank");
-        aAddress.append(shortAddress);
-        var holder = ce("span");
-        holder.append(aAddress);
-        holder.append(aCopy);
-        
-        return holder; 
-      }
-
-      function copyAddress(address) {
-        console.log("copying " + address);
-
-        // Create a dummy input to copy the string array inside it
-          var dummy = document.createElement("input");
-
-        // Add it to the document
-        document.body.appendChild(dummy);
-
-        // Set its ID
-        dummy.setAttribute("id", "dummy_id");
-
-        // Output the array into it
-        document.getElementById("dummy_id").value=address;
-
-        // Select it
-        dummy.select();
-
-        // Copy its contents
-        document.execCommand("copy");
-
-        // Remove it as its not needed anymore
-        document.body.removeChild(dummy);
-      }
-
-
 
       function setMembers(projectContract, row, viewerType, projectAddress) {
         projectContract.methods.getMembers().call({from : account})
