@@ -15,7 +15,7 @@ const membershipTokenType     = ge("membership_token_type");
 const administratorAddress    = ge("administrator_address");
 const proofsNFTSymbol         = ge("proofs_nft_symbol");
 
-function bootPage(){ 
+function bootPageContracts(){ 
 	console.log("booting page contracts");
 }
 
