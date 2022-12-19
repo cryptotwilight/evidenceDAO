@@ -1,4 +1,4 @@
-iEvidenceDaoProofNft = [
+const iEvidenceDaoProofNftAbi = [
 	{
 		"inputs": [
 			{

@@ -1,4 +1,4 @@
-iEvidenceDAOCore = [
+const iEvidenceDAOCoreAbi = [
 	{
 		"inputs": [
 			{

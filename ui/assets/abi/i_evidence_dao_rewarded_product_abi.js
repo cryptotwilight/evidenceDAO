@@ -1,4 +1,4 @@
-iEvidenceDaoRewardedProduct = [
+const iEvidenceDaoRewardedProductAbi = [
 	{
 		"inputs": [
 			{

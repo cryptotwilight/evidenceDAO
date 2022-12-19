@@ -1,4 +1,4 @@
-iOpenRegisterLite = [
+const iOpenRegisterLiteAbi = [
 	{
 		"inputs": [
 			{

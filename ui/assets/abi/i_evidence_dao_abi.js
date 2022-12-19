@@ -1,4 +1,4 @@
-iEvidenceDao = [
+const iEvidenceDaoAbi = [
 	{
 		"inputs": [
 			{

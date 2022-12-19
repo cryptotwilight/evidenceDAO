@@ -27,7 +27,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Evidence DAO</title>
+    <title>Evidence DAO - View Deliverable</title>
 
     <meta name="description" content="" />
 
@@ -102,19 +102,19 @@
               </a>
             </li>
             <li class="menu-item">
-              <a href="01_view_projects.html" class="menu-link">
+              <a href="index.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-briefcase"></i>
                 <div data-i18n="Analytics">My Projects</div>
               </a>
             </li>    
             <li class="menu-item">
-              <a href="02_view_assessments.html" class="menu-link">
+              <a href="02_assessments.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-glasses"></i>
                 <div data-i18n="Analytics">My Assessments</div>
               </a>
             </li>  
             <li class="menu-item">
-              <a href="05_view_atheneum.html" class="menu-link">
+              <a href="05_atheneum.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-book"></i>
                 <div data-i18n="Analytics">DAO Atheneum</div>
               </a>
@@ -145,11 +145,9 @@
                   <input
                     type="text"
                     class="form-control border-0 shadow-none"
-                    placeholder="enter DAO name to search ..."
-                    aria-label="enter DAO name to search ..."
-                    id="dao_search_field"
+                    placeholder="Search..."
+                    aria-label="Search..."
                   />
-                  <a href="javascript:search()" id="search_for_dao_button" class="btn btn-sm btn-outline-primary">Search</a>
                 </div>
               </div>
               <!-- /Search -->
@@ -162,14 +160,13 @@
 
                 <!-- User -->
                 <li class="nav-item lh-1 me-3">
-                  
+                  <span id="show_wallet"></span>
                 </li>
                 <!--/ User -->
               </ul>
             </div>
-            <span id="show_wallet"></span>
           </nav>
-        
+
           <!-- / Navbar -->
 
           <!-- Content wrapper -->
@@ -188,89 +185,87 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-12 mb-4">
+                <div class="col-6 mb-4">
                   <div class="card">
                     <div class="card-body">
                       <div class="card-title d-flex align-items-start justify-content-between">
-                        <h5 class="card-title text-primary">Register new DAO</h5> 
-                      </div>                      
-                      <table id="administer_daos_table" width="100%">
-                        <tr>
-                          <td>Logo</td><td><input type="file" id="new_dao_logo" class="btn btn-sm btn-outline-primary"></td>
-                          <td>DAO Name</td><td><input type="text" id="dao_name"></td>
-                          <td></td><td></td>
-                        </tr>
-                        <tr>
-                          <td>Membership Token</td><td><input type="text" id="membership_token_contract" placeholder="0x.."></td>
-                          <td>Membership Token Limit</td><td><input type="text" id="membership_token_limit" placeholder="number of tokens to qualify as member"></td>
-                          <td>Membership Token Type</td><td>
-                            <select id="membership_token_type">
-                              <option value="0">NFT</option>
-                              <option value="1">ERC20 (Cryptocurrency)</option>
-                            </select>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Administrator</td><td><input type="text" id="administrator_address" placeholder="0x.."></td>
-                          <td>Nft Proofs Symbol</td><td><input type="text" id="proofs_nft_symbol"></td>
-                          <td></td><td><a href="javascript:registerDao();" id="register_dao_button" class="btn btn-sm btn-outline-primary">Register DAO</a></td>
-                        </tr>
-                      </table>
+                        <h5 class="card-title text-primary"><span id="deliverable_name_span"></span> Details</h5> 
+                      </div>                                            
+                      <span id="deliverable_details_span"></span>  
+                      <span id="leave_or_cancel_span"></span>
                     </div>
                   </div>
                 </div>
+            
+                <div class="col-lg-6 col-md-8 order-1">
+					<div class="row">
+						<span id="add_assignee_span"></span>
+					</div>	
+					<div class="row">
+                    	<span id="claim_deliverable_span"></span>
+                  	</div>
+				  	<div class="row">
+	                    <span id="book_assessment_span"></span>
+    	            </div>
+				  	<div class="row">
+                    	<span id="approve_deliverable_span"></span>
+                  	</div>
+                </div>
               </div>
+
+
               <div class="row">
-                <div class="col-12 mb-4">
+                <!-- Total Revenue -->
+                <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
                   <div class="card">
-                    <div class="card-body">
-                      <div class="card-title d-flex align-items-start justify-content-between">
-                        <h5 class="card-title text-primary">Registered DAOs</h5> 
-                      </div>                      
-                      <table id="dao_results_table" width="100%">
-                        <thead>
-                          <tr>
-                            <th><!-- logo --></th>
-                            <th>DAO Name</th>
-                            <th>Membership Token</th>
-                            <th>Administrator</th>
-                            <th>Nft Proofs Symbol</th>
-                            <th><!-- view --></th>
-                            <th><!-- administer --></th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                    <div class="row row-bordered g-0">
+                      <div class="col-md-12">
+                        <h5 class="card-header m-0 me-2 pb-3">Assignees</h5>
+                        <span id="assignee_message_span"></span>
+                        
+                          <table class="table" id="list_assignees_table">
+                            <thead>
+                              <tr>                                
+                                <th>Assignees</th>                                
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>                              
+                            </tbody>
+                        </table>
 
-                        </tbody>                        
-                      </table>
                     </div>
                   </div>
-                </div>
-              </div>          
-              
-            </div>
+                </div>                
+  
+                <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
+                  <div class="card">
+                    <div class="row row-bordered g-0">
+                      <div class="col-md-12">
+                        <h5 class="card-header m-0 me-2 pb-3">Deliverable Files</h5>
+                        <span id="deliverables_message_span"></span>
+                        
+                          <table class="table" id="list_deliverable_files_table">
+                            <thead>
+                              <tr>
+                                <th>Filename</th>
+                                <th>Summary</th>
+                                <th>Download</th>
+                              </tr>
+                            </thead>
+                            <tbody>                              
+                            </tbody>
+                        </table>
 
-            <!-- / Content -->
-
-            <!-- Footer -->
-            <footer class="content-footer footer bg-footer-theme">
-              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-                <div class="mb-2 mb-md-0">
-                  ©
-                  <script>
-                    document.write(new Date().getFullYear());
-                  </script>
-                   Block Star Logic
-                  , powered by
-                  <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
-                </div>
-                <div>
-       
-                </div>
+                    </div>
+                  </div>
+                </div>           
               </div>
-            </footer>
-            <!-- / Footer -->
-
+   
+            </div>
+            <!-- / Content -->
+            <div class="row">  
+            </div>
             <div class="content-backdrop fade"></div>
           </div>
           <!-- Content wrapper -->
@@ -307,17 +302,21 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-
-
-    <script src="assets/abi/i_open_register_lite_abi.js"></script>
-    <script src="assets/abi/i_evidence_dao_core_abi.js"></script>
+    <script src="assets/abi/i_erc20_metadata_abi.js"></script>
+    <script src="assets/abi/i_erc721_metadata_abi.js"></script>
+    
     <script src="assets/abi/i_evidence_dao_abi.js"></script>
     <script src="assets/abi/i_evidence_dao_member_register_abi.js"></script>
+    <script src="assets/abi/i_evidence_dao_project_abi.js"></script>
+    <script src="assets/abi/i_evidence_dao_rewarded_product_abi.js"></script>
     
     <script src="assets/js/util.js"></script>
-    <script src="assets/js/autoconnect.js"></script>
+    <script src="assets/js/autoconnect.js"></script>  
     <script src="assets/js/ipfs_connect.js"></script>
-    <script src="assets/js/index.js"></script>
+    <script src="assets/js/evidence_dao.js"></script>
+	<script src="assets/js/view_deliverable.js"></script>
     
+    <script> 
+  </script>
   </body>
 </html>

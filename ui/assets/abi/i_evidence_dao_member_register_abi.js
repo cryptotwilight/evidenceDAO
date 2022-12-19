@@ -1,4 +1,5 @@
-iEvidenceDaoMemberRegister = [
+const iEvidenceDaoMemberRegisterAbi = 
+[
 	{
 		"inputs": [
 			{

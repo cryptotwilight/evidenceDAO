@@ -1,0 +1,1 @@
+iErc721MetadataAbi = [];
