@@ -1,4 +1,6 @@
 const openRegisterLiteAddress = "0xB0030f8Ec426b8b88104f5E807b5b25B300c8358"; 
+var iOpenRegisterLiteContract; 
+
 
 const daoNameField        = ge("dao_search_field");
 const searchForDaoButton  = ge("search_for_dao_button");

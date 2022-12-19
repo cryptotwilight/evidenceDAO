@@ -1,11 +1,6 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const projectAddress = urlParams.get("project");
-const iEvidenceDaoProject = getContract(iEvidenceDaoProjectAbi, projectAddress);
-var iEvidenceDaoMemberRegister; 
-var iEvidenceDao; 
-var projectSeed; 
-var daoSeed; 
 
 const projectNameSpan         		= ge("project_name_span");
 const projectDetailsSpan      		= ge("project_details_span");
@@ -19,6 +14,7 @@ var deliverableAssignees 			= [];
 const joinOrLeaveSpan				= ge("join_or_leave_span");
 
 async function configureCoreContracts() { 
+	iEvidenceDaoProject = getContract(iEvidenceDaoProjectAbi, projectAddress);
 	iEvidenceDaoProject.methods.getSeed().call({from : account})
 	.then(function(resp){
 		console.log(resp);
@@ -640,7 +636,7 @@ function createOnChainDeliverable(rewardedProductSeed, assessmentSeed) {
 		deliverablesMessageSpan.innerHTML = ""; 
 		deliverablesMessageSpan.append(text("CREATED: "));
 		var a = ce("a");
-		a.setAttribute("href", chain.blockExplorerUrls+"hash/"+resp.blockHash);		
+		a.setAttribute("href", chain.blockExplorerUrls[0]+"hash/"+resp.blockHash);		
 		a.append(text(resp.blockHash));
 		loadPageData();
 	})
@@ -824,7 +820,7 @@ function cancelDeliverable(deliverableAddress) {
 	.then(function(resp){
 		console.log(resp);
 		deliverablesMessageSpan.innerHTML = ""; 
-		deliverablesMessageSpan.append(text("CANCELLED: <a href="+chain.blockExplorerUrls+"hash/"+resp.blockHash+">" +resp.blockHash +"</a>"));
+		deliverablesMessageSpan.append(text("CANCELLED: <a href="+chain.blockExplorerUrls[0]+"hash/"+resp.blockHash+">" +resp.blockHash +"</a>"));
 	})
 	.catch(function(err){
 		console.log(err);
@@ -837,7 +833,7 @@ function pushToAtheneum(deliverableAddress) {
 	.then(function(resp){
 		console.log(resp);
 		deliverablesMessageSpan.innerHTML = ""; 
-		deliverablesMessageSpan.append(text("PUSHED: <a href="+chain.blockExplorerUrls+"hash/"+resp.blockHash+">" +resp.blockHash +"</a>"));
+		deliverablesMessageSpan.append(text("PUSHED: <a href="+chain.blockExplorerUrls[0]+"hash/"+resp.blockHash+">" +resp.blockHash +"</a>"));
 	})
 	.catch(function(err){
 		console.log(err);
@@ -852,22 +848,6 @@ function addCancelDeliverable(cell, deliverableAddress) {
 	cancel.append(cancelIcon);
 	cancel.append(text("Cancel"));
 	cell.append(cancel);
-}
-
-function setValue(detailsTable, label, value) {
-	var row = detailsTable.insertRow(); 
-	var labelCell = row.insertCell();            
-	labelCell.append(text(label));
-	var valueCell = row.insertCell();
-	valueCell.append(text(value));
-}
-
-function setValueElement(detailsTable, label, value) {
-	var row = detailsTable.insertRow(); 
-	var labelCell = row.insertCell();            
-	labelCell.append(text(label));
-	var valueCell = row.insertCell();
-	valueCell.append(value);
 }
 
 function populateSeedData(projectDetailsTable) {
@@ -885,8 +865,6 @@ function populateSeedData(projectDetailsTable) {
 	});
   }
 
-  function convertToDateString(dte){
-	return new Date(dte*1000).toISOString();
-  }
+
 
 
