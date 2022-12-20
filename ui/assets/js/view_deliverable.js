@@ -279,7 +279,8 @@ function generateManifestAndPost() {
 	manifest.chain 			= chain.id; 
 	manifest.chainName 		= chain.name;
 	manifest.date			= new Date().getTime(); 
-	manifest.humanDate		= new Date().toISOString(); 		
+	manifest.humanDate		= new Date().toISOString(); 	
+	manifest.type			= "DELIVERABLE";	
 	manifest.files 			= claimFiles;
 
 	console.log(manifest);

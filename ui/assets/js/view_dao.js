@@ -194,7 +194,18 @@
         iEvidenceDao.methods.getAtheneum().call({from : account})
         .then(function(resp){
           console.log(resp);
+          var atheneum = resp; 
           setValueElement(daoDetailsTable,"Atheneum",shortenLinkCopyAddress(resp));
+          var a = ce("a");
+          a.setAttribute("href", "05_view_atheneum?atheneum="+atheneum);
+          var i = ce("i");
+          i.setAttribute("class", "bx bx-glasses");
+          a.append(i);
+          a.append(text("View Atheneum"));
+          var row = daoDetailsTable.insertRow(); 
+          var filler = row.insertCell(); 
+          var viewAtheneum = row.insertCell();
+          viewAtheneum.append(a);
         })
         .catch(function(err){
           console.log(err);

@@ -23,6 +23,7 @@ var iEvidenceDaoAssessorRegister;
 var iEvidenceDao; 
 var iEvidenceDaoMemberRegister; 
 var iEvidenceDaoProject; 
+var iEvidenceDaoAtheneum;
 
 async function configureCoreContracts() { 
 	iOpenRegisterLiteContract =  getContract(iOpenRegisterLiteAbi, openRegisterLiteAddress);
@@ -53,6 +54,22 @@ function activateAssessorRegister() {
 
 function getViewerRole() { 
 	checkIsDaoAdmin();	
+}
+
+function checkForAdminOnly() {
+	iEvidenceDaoMemberRegister.methods.isAdministrator(account).call({from : account})
+	.then(function(resp){
+		console.log(resp);
+		isAdmin = resp; 
+		if(isAdmin) {
+			roleName = "ADMINISTRATOR";
+		}
+		loadProfiles();
+
+	})
+	.catch(function(err){
+		console.log(err);
+	})
 }
 
 function checkIsDaoAdmin() { 

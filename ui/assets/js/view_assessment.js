@@ -11,27 +11,19 @@ const listAssigneesTable				= ge("list_assignees_table");
 const assessmentMessageSpan				= ge("assessment_message_span");
 const assigneeMessageSpan				= ge("assignee_message_span");
 
-const listDeliverableFilesTable			= ge("list_deliverable_files_table");
+const listDeliverableFilesTable			= ge("list_assessment_files_table");
 
 const approveRewardSpan 				= ge("approve_reward_span");
-const pushToAtheneumSpan 				= ge("push_to_atheneum_span");
 const allowProductUpdateSpan 			= ge("allow_product_update_span");
 const addAssigneeSpan	 				= ge("add_assignee_span");
 const cancelDeliverablSpan 				= ge("cancel_deliverable_span");
-const assessmentSpan 					= ge("assessment_span");
-const claimDeliverableSpan 				= ge("claim_deliverable_span");
-const bookAssessmentSpan 				= ge("book_assessment_span");
+const claimAssessmenteSpan 				= ge("claim_assessment_span");
 
 
-var isAssignee = false;
 var isAssessor = false; 
 var isRegisteredAssessor = false;; 
 
-async function configureCoreContracts() { 
-	bootCore();
-}
-
-function bootCore() { 
+function bootPageContracts() { 
 	iEvidenceDaoRewardedProduct.methods.getSeed().call({from : account})
 	.then(function(resp){
 		console.log(resp);
@@ -123,8 +115,8 @@ function addAssigneeRow(assignee, row) {
 	}
 }
 
-function populateDeliverableFiles() { 
-	clear(listDeliverableFilesTable);
+function populateAssessmentFiles() { 
+	clear(listAssessmentFilesTable);
 	iEvidenceDaoRewardedProduct.methods.getContentManifest().call({from : account})
 	.then(function(resp){
 		console.log(resp);		
@@ -150,7 +142,7 @@ function processManifest(manifest) {
 		var files = json.files; 
 		for(var x = 0; x < files.length; x++){
 			var file = files[x];
-			var row = listDeliverableFilesTable.insertRow(); 
+			var row = listAssessmentFilesTable.insertRow(); 
 			addFileRow(file, row);
 		}
 	})
@@ -185,23 +177,9 @@ function approveReward() {
 	.then(function(resp){
 		console.log(resp);
 		var a = getRespLink(resp);
-		deliverablesMessageSpan.innerHTML = ""; 
-		deliverablesMessageSpan.append(text("REWARD APPROVED: "))
-		deliverablesMessageSpan.append(a);
-	})
-	.catch(function(err){
-		console.log(err);
-	})
-}
-
-function pushToAtheneum() { 
-	iEvidenceDaoProjectDeliverable.methods.pushToAtheneum().send({from : account})
-	.then(function(resp){
-		console.log(resp);
-		var a = getRespLink(resp);
-		deliverablesMessageSpan.innerHTML = ""; 
-		assigneeMessageSpan.append(text("DELIVERABLE PUSHED TO ATHENEUM: "))
-		assigneeMessageSpan.append(a);
+		assessmentMessageSpan.innerHTML = ""; 
+		assessmentMessageSpan.append(text("REWARD APPROVED: "))
+		assessmentMessageSpan.append(a);
 	})
 	.catch(function(err){
 		console.log(err);
@@ -245,9 +223,9 @@ function cancelDeliverable() {
 	.then(function(resp){
 		console.log(resp);
 		var a = getRespLink(resp);
-		deliverablesMessageSpan.innerHTML = ""; 
-		deliverablesMessageSpan.append(text("DELIVERABLE CANCELLED: "))
-		deliverablesMessageSpan.append(a);
+		assessmentMessageSpan.innerHTML = ""; 
+		assessmentMessageSpan.append(text("DELIVERABLE CANCELLED: "))
+		assessmentMessageSpan.append(a);
 	})
 	.catch(function(err){
 		console.log(err);
@@ -265,9 +243,9 @@ function allowProductUpdate() {
 	.then(function(resp){
 		console.log(resp);
 		var a = getRespLink(resp);
-		deliverablesMessageSpan.innerHTML = ""; 
-		deliverablesMessageSpan.append(text("PRODUCT UPDATE ENABLED: "))
-		deliverablesMessageSpan.append(a);
+		assessmentMessageSpan.innerHTML = ""; 
+		assessmentMessageSpan.append(text("PRODUCT UPDATE ENABLED: "))
+		assessmentMessageSpan.append(a);
 	})
 	.catch(function(err){
 		console.log(err);
@@ -276,14 +254,15 @@ function allowProductUpdate() {
 
 function generateManifestAndPost() { 
 	var manifest = {};
-	manifest.deliverable 	= deliverableAddress; 
-	manifest.projectAddress = deliverableSeed.project; 
+	manifest.assessment 	= assessmentAddress; 
+	manifest.projectAddress = assessmentSeed.project; 
 	manifest.daoAddress 	= projectSeed.dao; 
-	manifest.submitter		= account; 
+	manifest.assessor		= account; 
 	manifest.chain 			= chain.id; 
 	manifest.chainName 		= chain.name;
 	manifest.date			= new Date().getTime(); 
-	manifest.humanDate		= new Date().toISOString(); 		
+	manifest.humanDate		= new Date().toISOString(); 
+	manifest.type			= "ASSESSMENT"; 		
 	manifest.files 			= claimFiles;
 
 	console.log(manifest);
@@ -310,9 +289,9 @@ function postClaimToChain(ipfsManifest) {
 	.then(function(resp){
 		console.log(resp);
 		var a = getRespLink(resp);
-		deliverablesMessageSpan.innerHTML = ""; 
-		deliverablesMessageSpan.append(text("REWARD CLAIMED: "))
-		deliverablesMessageSpan.append(a);
+		assessmentMessageSpan.innerHTML = ""; 
+		assessmentMessageSpan.append(text("REWARD CLAIMED: "))
+		assessmentMessageSpan.append(a);
 	})
 	.catch(function(err){
 		console.log(err);
@@ -351,24 +330,16 @@ function getApproveRewardModule(){
 	a.append(text("Approve Reward"));
 	
 }
-function getPushToAtheneumModule(){
-	pushToAtheneumSpan.innerHTML = "";	
-	var a = ce("a");
-	wrap(pushToAtheneumSpan,"Push To Atheneum" ,a);
-	a.setAttribute("class","btn btn-outline-success");
-	a.setAttribute("href", "javascript:pushToAtheneum();");
-	a.append(text("Push To Atheneum"));
-	
-}
+
 function getAllowProductUpdateModule(){
 	allowProductUpdateSpan.innerHTML = "";	
 	var a = ce("a");
 	wrap(allowProductUpdateSpan,"Allow Product Update" ,a);
 	a.setAttribute("class","btn btn-outline-success");
 	a.setAttribute("href", "javascript:allowProductUpdate()");
-	a.append(text("Allow Product Update"));
-	
+	a.append(text("Allow Product Update"));	
 }
+
 function getAddAssigneeModule(){
 	addAssigneeSpan.innerHTML = "";
 	var center = ce("center");
@@ -392,6 +363,7 @@ function getAddAssigneeModule(){
 	cell = row.insertCell();
 	cell.append(a);
 }
+
 function getCancelDeliverableModule(){
 	cancelDeliverablSpan.innerHTML = "";	
 	var a = ce("a");
@@ -401,19 +373,12 @@ function getCancelDeliverableModule(){
 	a.append(text("Cancel Deliverable"));	
 }
 
-function getAssessmentModule(){
-	assessmentSpan.innerHTML = "";
-	var table = ce("table");
-	wrap(assessmentSpan,"Assessment" ,table);	
-	configureForStatus(table);
-}
-
 var claimFiles = [];
 
 function getClaimRewardModule(){
 	claimDeliverableSpan.innerHTML = "";
 	var table = ce("table");
-	wrap(claimDeliverableSpan, " Claim Deliverable Reward", table);
+	wrap(claimDeliverableSpan, " Claim Assessment Reward", table);
 
 	var row = table.insertRow(); 
 	var name = row.insertCell(); 
@@ -512,38 +477,28 @@ function displayClaimFiles() {
 	}
 }
 
-function getBookAssessmentModule(){
-	bookAssessmentSpan.innerHTML = "";
-	var a = ce("a");
-	a.setAttribute("class","btn btn-outline-warning");
-	a.setAttribute("href", "javascript:bookAssessment()");
-	a.append(text("Book Assessment"));
-	bookAssessmentSpan.append(a);
-}
-
 function loadProfiles() {
 	console.log("loading profiles");
 	configureRoleForStatus();
 }
 
-function populateDeliverableDetails() { 
+function populateAssessmentDetails() { 
 	deliverableDetailsSpan.innerHTML = ""; 
 	var table = ce("table");
 	deliverableDetailsSpan.append(table);	 
-	setValue(table, "Deliverable Name: ", deliverableSeed.name);	
-	setValue(table, "Due date: "	, convertToDateString(deliverableSeed.dueDate));
-	setValue(table, "Project Members Only: ", deliverableSeed.projectMemberAssignmentsOnly );
+	setValue(table, "Assessment Name: "	, assessmentSeed.name);	
+	setValue(table, "Due date: "			, convertToDateString(assessmentSeed.dueDate));
 	
 	var row = table.insertRow(); 
 	var name = row.insertCell(); 
 	var value = row.insertCell();
 	name.append("Reward: ");
-	addReward(value, deliverableSeed);
+	addReward(value, assessmentSeed);
 	
 	row = table.insertRow(); 
 	name = row.insertCell(); 
 	name.append("Reward Currency: ");
-	addRewardCurrency(row.insertCell(), deliverableSeed);
+	addRewardCurrency(row.insertCell(), assessmentSeed);
 
 	row = table.insertRow(); 
 	name = row.insertCell(); 
@@ -551,9 +506,9 @@ function populateDeliverableDetails() {
 
 	value = row.insertCell(); 
 	var lnk = ce("a");
-	lnk.setAttribute("href", chain.blockExplorerUrls[0] +"address/"+ deliverableSeed.proofNft);
+	lnk.setAttribute("href", chain.blockExplorerUrls[0] +"address/"+ assessmentSeed.proofNft);
 	lnk.setAttribute("target", "_blank");
-	lnk.append(text(deliverableSeed.proofNft));
+	lnk.append(text(assessmentSeed.proofNft));
 	value.append(lnk); 
 
 	row = table.insertRow(); 
@@ -581,21 +536,6 @@ function populateDeliverableDetails() {
 	name.append("Completed Date: ");
 
 	setCompletedDate(row.insertCell());
-
-	row = table.insertRow(); 
-	name = row.insertCell(); 
-	name.append("Search Terms: ");
-
-	value = row.insertCell(); 
-	iEvidenceDaoProjectDeliverable.methods.getSearchTerms().call({from : account })
-	.then(function(resp){
-		console.log(resp);
-		var searchTerms = resp; 
-		value.append(searchTerms);
-	})
-	.catch(function(err){
-		console.log(err);
-	});	
 }
 
 function configureRoleForStatus(){
@@ -729,10 +669,6 @@ function checkAssessorRole(status) {
 	else { 
 		populatePage();
 	}
-}
-
-function determinDeliverableSpecificRole() {
-	i
 }
 
 
